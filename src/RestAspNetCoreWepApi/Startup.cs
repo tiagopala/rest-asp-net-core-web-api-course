@@ -23,6 +23,7 @@ namespace RestAspNetCoreWepApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterContext(Configuration);
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
