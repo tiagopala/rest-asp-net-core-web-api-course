@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Api.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RestAspNetCoreWepApi.Data;
 
-namespace RestAspNetCoreWepApi.Registers
+namespace Api.Data.Registers
 {
     public static class ContextRegister
     {
