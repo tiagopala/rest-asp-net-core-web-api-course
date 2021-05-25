@@ -16,6 +16,7 @@ namespace Api.Application.Controllers
             _fornecedorRepository = fornecedorRepository;
         }
 
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<FornecedorDTO>>> ObterTodos()
         {
             var fornecedores = await _fornecedorRepository.ObterTodos();
