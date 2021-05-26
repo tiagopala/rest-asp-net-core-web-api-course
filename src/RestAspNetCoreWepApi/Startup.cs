@@ -1,4 +1,4 @@
-using Api.Data.Registers;
+using Api.Application.Configurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +22,15 @@ namespace RestAspNetCoreWepApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.RegisterContext(Configuration);
+            services.AddAutoMapper(typeof(Startup));
+            services.RegisterDbContext(Configuration);
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestAspNetCoreWepApi", Version = "v1" });
             });
+            services.RegisterDependencyInjection();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -21,8 +21,7 @@ namespace Api.Data.Context
             // dessa forma, otimizando o banco de dados 
             foreach (var property in modelBuilder.Model.GetEntityTypes()
                 .SelectMany(e => e.GetProperties()
-                .Where(p => p.ClrType == typeof(string))))
-                property.Relational().ColumnType = "varchar(100)";
+                .Where(p => p.ClrType == typeof(string))));
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApiDbContext).Assembly);
 
