@@ -26,6 +26,12 @@ namespace RestAspNetCoreWepApi
             services.RegisterDbContext(Configuration);
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllers();
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                // Removendo a validação automática de Model State
+                // Permitindo assim nós mesmos customizarmos nossas validações
+                options.SuppressModelStateInvalidFilter = true;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestAspNetCoreWepApi", Version = "v1" });
