@@ -58,16 +58,12 @@ namespace Api.Application.Controllers
         public async Task<ActionResult<FornecedorDTO>> Adicionar(FornecedorDTO fornecedorDTO)
         {
             if (!ModelState.IsValid) 
-                return BadRequest();
+                return CustomResponse(ModelState);
 
             var fornecedor = _mapper.Map<Fornecedor>(fornecedorDTO);
+            await _fornecedorService.Adicionar(fornecedor);
 
-            var resultado = await _fornecedorService.Adicionar(fornecedor);
-
-            if (!resultado)
-                return BadRequest();
-
-            return Ok(fornecedor);
+            return CustomResponse(fornecedorDTO);
         }
 
         [HttpPut("{id:guid}")]
