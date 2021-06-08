@@ -92,7 +92,7 @@ namespace Api.Application.Controllers
             var produto = _mapper.Map<Produto>(produtoDTO);
             await _produtoService.Adicionar(produto);
 
-            return CustomResponse(produtoDTO);
+            return CustomResponse();
         }
 
         [HttpPost("imagem")]

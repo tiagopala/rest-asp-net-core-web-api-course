@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Api.Application.Extensions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Api.Application.DTOs
 {
+    [ModelBinder(typeof(JsonWithFilesFormDataModelBinder), Name = "produto")]
     public class ProdutoImagemDTO
     {
         [Key]
