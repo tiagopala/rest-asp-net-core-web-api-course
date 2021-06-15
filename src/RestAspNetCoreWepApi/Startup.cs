@@ -22,21 +22,18 @@ namespace RestAspNetCoreWepApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(Startup));
-            services.RegisterDbContext(Configuration);
-            services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddControllers();
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 // Removendo a validação automática de Model State
                 // Permitindo assim nós mesmos customizarmos nossas validações
                 options.SuppressModelStateInvalidFilter = true;
             });
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestAspNetCoreWepApi", Version = "v1" });
-                c.EnableAnnotations();
-            });
+
+            services.AddAutoMapper(typeof(Startup));
+            services.RegisterDbContext(Configuration);
+            services.AddRouting(options => options.LowercaseUrls = true);
+            services.AddControllers();
+            services.RegisterSwagger();
             services.RegisterDependencyInjection();
         }
 
@@ -46,16 +43,12 @@ namespace RestAspNetCoreWepApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestAspNetCoreWepApi v1"));
             }
 
+            app.ConfigureSwagger();
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

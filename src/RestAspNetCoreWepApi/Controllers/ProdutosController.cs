@@ -104,6 +104,43 @@ namespace Api.Application.Controllers
             return Ok(file);
         }
 
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> Atualizar(Guid id, ProdutoDTO produtoDTO)
+        {
+            if (id != produtoDTO.Id)
+            {
+                NotificarErro("Os Id's informados devem ser iguais");
+                return CustomResponse();
+            }
+
+            var produtoAtualizacao = await ObterProduto(id);
+            produtoDTO.Imagem = produtoAtualizacao.Imagem;
+
+            if (!ModelState.IsValid)
+                return CustomResponse(ModelState);
+
+            if (produtoDTO.ImagemUpload != null)
+            {
+                var imagemNome = $"{Guid.NewGuid()}_{produtoDTO.Imagem}";
+                if (!UploadArquivo(produtoDTO.ImagemUpload, imagemNome))
+                    return CustomResponse(ModelState);
+
+                produtoAtualizacao.Imagem = imagemNome;
+            }
+
+            produtoAtualizacao.Nome = produtoDTO.Nome;
+            produtoAtualizacao.Descricao = produtoDTO.Descricao;
+            produtoAtualizacao.Valor = produtoDTO.Valor;
+            produtoAtualizacao.Ativo = produtoDTO.Ativo;
+
+            await _produtoService.Atualizar(_mapper.Map<Produto>(produtoAtualizacao));
+
+            return CustomResponse(produtoDTO);
+        }
+
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
