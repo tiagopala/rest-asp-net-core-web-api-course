@@ -14,10 +14,10 @@ namespace Api.Application.Configurations
                 => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             // Fix
-            //services.AddIdentityCore<IdentityUser>()
-            //        .AddRoles<IdentityRole>()
-            //        .AddEntityFrameworkStores<AuthDbContext>()
-            //        .AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser,IdentityRole>()
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<AuthDbContext>()
+                    .AddDefaultTokenProviders();
         }
     }
 }
