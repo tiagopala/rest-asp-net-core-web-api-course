@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.Application.Configurations
 {
-    public static class DbContextRegister
+    public static class DbContextConfig
     {
         public static void RegisterDbContext(this IServiceCollection services, IConfiguration configuration)
         {

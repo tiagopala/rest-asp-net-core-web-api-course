@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Api.Business.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Application.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class FornecedoresController : MainController
     {
@@ -32,6 +34,7 @@ namespace Api.Application.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IEnumerable<FornecedorDTO>> ObterTodos()
         {
             var fornecedores = await _fornecedorRepository.ObterTodos();

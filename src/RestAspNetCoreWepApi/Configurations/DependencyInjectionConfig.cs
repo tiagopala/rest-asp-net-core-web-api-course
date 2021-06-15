@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.Application.Configurations
 {
-    public static class DependencyInjectionRegister
+    public static class DependencyInjectionConfig
     {
         public static void RegisterDependencyInjection(this IServiceCollection services)
         {

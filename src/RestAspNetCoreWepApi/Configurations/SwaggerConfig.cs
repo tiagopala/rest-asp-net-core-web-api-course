@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Api.Application.Configurations
 {
-    public static class SwaggerRegister
+    public static class SwaggerConfig
     {
         public static void RegisterSwagger(this IServiceCollection services)
         {

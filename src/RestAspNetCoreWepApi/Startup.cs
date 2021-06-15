@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace RestAspNetCoreWepApi
@@ -31,6 +30,7 @@ namespace RestAspNetCoreWepApi
 
             services.AddAutoMapper(typeof(Startup));
             services.RegisterDbContext(Configuration);
+            services.AddIdentityConfiguration(Configuration);
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllers();
             services.RegisterSwagger();
@@ -49,6 +49,7 @@ namespace RestAspNetCoreWepApi
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
