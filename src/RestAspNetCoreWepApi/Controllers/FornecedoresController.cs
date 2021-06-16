@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Api.Business.Models;
 using Microsoft.AspNetCore.Authorization;
+using Api.Application.Extensions;
 
 namespace Api.Application.Controllers
 {
@@ -45,9 +46,9 @@ namespace Api.Application.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
         public async Task<ActionResult<FornecedorDTO>> ObterPorId(Guid id)
         {
             var fornecedorDTO = await ObterFornecedorProdutosEndereco(id);
@@ -59,9 +60,10 @@ namespace Api.Application.Controllers
         }
 
         [HttpPost]
+        [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
+        [ClaimsAuthorize("Fornecedor", "Adicionar")]
         public async Task<ActionResult<FornecedorDTO>> Adicionar(FornecedorDTO fornecedorDTO)
         {
             if (!ModelState.IsValid) 
@@ -74,9 +76,10 @@ namespace Api.Application.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
+        [ClaimsAuthorize("Fornecedor", "Atualizar")]
         public async Task<ActionResult<FornecedorDTO>> Atualizar(Guid id, FornecedorDTO fornecedorDTO)
         {
             if (id != fornecedorDTO.Id)
@@ -95,10 +98,11 @@ namespace Api.Application.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<FornecedorDTO>> Deletar(Guid id)
+        [ClaimsAuthorize("Fornecedor", "Excluir")]
+        public async Task<ActionResult<FornecedorDTO>> Excluir(Guid id)
         {
             var fornecedorDTO = await ObterFornecedorEndereco(id);
 
@@ -119,6 +123,7 @@ namespace Api.Application.Controllers
         } 
 
         [HttpPut("atualizar-endereco/{id:guid}")]
+        [ClaimsAuthorize("Fornecedor", "Atualizar")]
         public async Task<IActionResult> AtualizarEndereco(Guid id, EnderecoDTO enderecoDTO)
         {
             if (id != enderecoDTO.Id)

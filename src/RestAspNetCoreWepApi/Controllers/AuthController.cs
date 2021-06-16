@@ -52,7 +52,7 @@ namespace Api.Application.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return CustomResponse(new { Token = GerarJwt() });
+                return CustomResponse(new { Token = GerarJwt(createUserDTO.Email) });
             }
 
             foreach (var error in result.Errors)
@@ -75,7 +75,7 @@ namespace Api.Application.Controllers
             var result = await _signInManager.PasswordSignInAsync(loginUserDTO.Email, loginUserDTO.Password, false, true);
 
             if (result.Succeeded)
-                return CustomResponse(new { Token = GerarJwt() });
+                return CustomResponse(new { Token = GerarJwt(loginUserDTO.Email) });
 
             if (result.IsLockedOut)
             {
@@ -87,8 +87,13 @@ namespace Api.Application.Controllers
             return CustomResponse();
         }
 
-        private string GerarJwt()
+        private async Task<string> GerarJwt(string email)
         {
+            // Continuar a partir daqui, adicionar claims e roles dentro do Token a ser criado
+            var user = await _userManager.FindByEmailAsync(email);
+            var claims = await _userManager.GetClaimsAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
