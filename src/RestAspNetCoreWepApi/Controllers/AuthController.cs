@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,7 +53,7 @@ namespace Api.Application.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return CustomResponse(new { Token = GerarJwt(createUserDTO.Email) });
+                return CustomResponse(new { Token = GerarJwt(createUserDTO.Email).Result });
             }
 
             foreach (var error in result.Errors)
@@ -75,7 +76,7 @@ namespace Api.Application.Controllers
             var result = await _signInManager.PasswordSignInAsync(loginUserDTO.Email, loginUserDTO.Password, false, true);
 
             if (result.Succeeded)
-                return CustomResponse(new { Token = GerarJwt(loginUserDTO.Email) });
+                return CustomResponse(new { Token = GerarJwt(loginUserDTO.Email).Result });
 
             if (result.IsLockedOut)
             {
@@ -89,10 +90,27 @@ namespace Api.Application.Controllers
 
         private async Task<string> GerarJwt(string email)
         {
-            // Continuar a partir daqui, adicionar claims e roles dentro do Token a ser criado
+            // Identificando o usuário, obtendo e atribuindo Claims referentes a ele.
             var user = await _userManager.FindByEmailAsync(email);
             var claims = await _userManager.GetClaimsAsync(user);
             var userRoles = await _userManager.GetRolesAsync(user);
+
+            // Configuração das Claims a serem adicionadas no Token.
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id)); // Sub -> User
+            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())); // Jti -> Id Próprio do Token
+            claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, ToUnixEpochDate(DateTime.UtcNow).ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.UtcNow).ToString(), ClaimValueTypes.Integer64));
+
+            // Adição da role do usuário via Claims.
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim("role", userRole));
+            }
+
+            // "Conversão" da Lista de Claims em ClaimsIdentity, sendo a propriedade aceita no SecurityTokenDescriptor.Subject.
+            var identityClaims = new ClaimsIdentity();
+            identityClaims.AddClaims(claims);
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -100,6 +118,7 @@ namespace Api.Application.Controllers
             {
                 Issuer = _appSettings.Emissor,
                 Audience = _appSettings.ValidoEm,
+                Subject = identityClaims,
                 Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             });
@@ -107,5 +126,8 @@ namespace Api.Application.Controllers
             var encodedToken = tokenHandler.WriteToken(token);
             return encodedToken;
         }
+
+        private static long ToUnixEpochDate(DateTime date)
+            => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
     }
 }
