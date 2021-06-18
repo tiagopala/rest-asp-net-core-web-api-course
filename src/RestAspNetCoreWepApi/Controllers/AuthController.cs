@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,7 +54,7 @@ namespace Api.Application.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return CustomResponse(new { Token = GerarJwt(createUserDTO.Email).Result });
+                return CustomResponse(GerarJwt(createUserDTO.Email).Result);
             }
 
             foreach (var error in result.Errors)
@@ -76,7 +77,7 @@ namespace Api.Application.Controllers
             var result = await _signInManager.PasswordSignInAsync(loginUserDTO.Email, loginUserDTO.Password, false, true);
 
             if (result.Succeeded)
-                return CustomResponse(new { Token = GerarJwt(loginUserDTO.Email).Result });
+                return CustomResponse(GerarJwt(loginUserDTO.Email).Result);
 
             if (result.IsLockedOut)
             {
@@ -88,7 +89,7 @@ namespace Api.Application.Controllers
             return CustomResponse();
         }
 
-        private async Task<string> GerarJwt(string email)
+        private async Task<LoginResponseDTO> GerarJwt(string email)
         {
             // Identificando o usuário, obtendo e atribuindo Claims referentes a ele.
             var user = await _userManager.FindByEmailAsync(email);
@@ -124,7 +125,19 @@ namespace Api.Application.Controllers
             });
 
             var encodedToken = tokenHandler.WriteToken(token);
-            return encodedToken;
+
+            // Criando o retorno para uma aplicação SPA
+            return new LoginResponseDTO
+            {
+                AccessToken = encodedToken,
+                ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
+                UserToken = new UserTokenDTO
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Claims = claims.Where(c => c.Type.Length > 3).Select(c => new ClaimDTO { Type = c.Type, Value = c.Value })
+                }
+            };
         }
 
         private static long ToUnixEpochDate(DateTime date)
