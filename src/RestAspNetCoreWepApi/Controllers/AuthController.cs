@@ -1,4 +1,5 @@
-﻿using Api.Application.DTOs;
+﻿using Api.Application.Configurations;
+using Api.Application.DTOs;
 using Api.Application.Extensions;
 using Api.Business.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -20,13 +21,13 @@ namespace Api.Application.Controllers
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly AppSettings _appSettings;
+        private readonly AppSettingsConfig _appSettings;
 
         public AuthController(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
-            IOptions<AppSettings> appSettings,
-            INotifier notifer) : base(notifer)
+            IOptions<AppSettingsConfig> appSettings,
+            INotifier notifier, IUserService userService) : base(notifier, userService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -97,6 +98,7 @@ namespace Api.Application.Controllers
             var userRoles = await _userManager.GetRolesAsync(user);
 
             // Configuração das Claims a serem adicionadas no Token.
+            claims.Add(new Claim(ClaimTypes.Name, user.Email));
             claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id)); // Sub -> User
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())); // Jti -> Id Próprio do Token

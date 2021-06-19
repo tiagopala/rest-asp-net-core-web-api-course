@@ -22,11 +22,11 @@ namespace Api.Application.Controllers
         private readonly IMapper _mapper;
 
         public FornecedoresController(
-            IFornecedorRepository fornecedorRepository,
-            IEnderecoRepository enderecoRepository,
+            IMapper mapper,
             IFornecedorService fornecedorService,
-            INotifier notifier,
-            IMapper mapper) : base(notifier)
+            IEnderecoRepository enderecoRepository,
+            IFornecedorRepository fornecedorRepository,
+            INotifier notifier, IUserService userService) : base(notifier, userService)
         {
             _fornecedorRepository = fornecedorRepository;
             _fornecedorService = fornecedorService;
@@ -63,9 +63,18 @@ namespace Api.Application.Controllers
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ClaimsAuthorize("Fornecedor", "Adicionar")]
+        //[ClaimsAuthorize("Fornecedor", "Adicionar")]
         public async Task<ActionResult<FornecedorDTO>> Adicionar(FornecedorDTO fornecedorDTO)
         {
+            if (UsuarioAutenticado)
+            {
+                // Exemplo de como capturar informações de usuário de forma simples, se necessário.
+                var userId = UsuarioId;
+                var userName = UsuarioNome;
+                var userEmail = UsuarioEmail;
+                var userClaims = UsuarioClaims;
+            }
+
             if (!ModelState.IsValid) 
                 return CustomResponse(ModelState);
 

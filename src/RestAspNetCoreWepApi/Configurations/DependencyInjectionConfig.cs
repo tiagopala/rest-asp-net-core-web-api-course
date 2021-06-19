@@ -1,7 +1,9 @@
-﻿using Api.Business.Interfaces;
+﻿using Api.Application.ApplicationServices;
+using Api.Business.Interfaces;
 using Api.Business.Notifications;
 using Api.Business.Services;
 using Api.Data.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.Application.Configurations
@@ -11,6 +13,7 @@ namespace Api.Application.Configurations
         public static void RegisterDependencyInjection(this IServiceCollection services)
         {
             services.AddScoped<INotifier, Notifier>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             #region Repositories
             services.AddScoped<IEnderecoRepository, EnderecoRepository>();
@@ -21,6 +24,7 @@ namespace Api.Application.Configurations
             #region Services
             services.AddScoped<IFornecedorService, FornecedorService>();
             services.AddScoped<IProdutoService, ProdutoService>();
+            services.AddScoped<IUserService, UserService>();
             #endregion
         }
     }

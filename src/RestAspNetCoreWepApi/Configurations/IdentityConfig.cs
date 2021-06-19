@@ -20,14 +20,14 @@ namespace Api.Application.Configurations
             services.AddIdentity<IdentityUser,IdentityRole>()
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<AuthDbContext>()
-                    .AddErrorDescriber<IdentityMensagensPortugues>()
+                    .AddErrorDescriber<IdentityMensagensPortuguesExtension>()
                     .AddDefaultTokenProviders();
 
             // Configuração do JWT
             var appSettingsSection = configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
+            services.Configure<AppSettingsConfig>(appSettingsSection);
 
-            var appSettings = appSettingsSection.Get<AppSettings>();
+            var appSettings = appSettingsSection.Get<AppSettingsConfig>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
             services.AddAuthentication(x =>

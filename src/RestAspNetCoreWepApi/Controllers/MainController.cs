@@ -2,7 +2,10 @@
 using Api.Business.Notifications;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Api.Application.Controllers
 {
@@ -10,10 +13,25 @@ namespace Api.Application.Controllers
     public abstract class MainController : ControllerBase
     {
         private readonly INotifier _notifier;
+
+        protected readonly IUserService _userService;
         
-        public MainController(INotifier notifier)
+        protected Guid UsuarioId { get; }
+        protected string UsuarioNome { get; }
+        protected string UsuarioEmail { get; }
+        protected IEnumerable<Claim> UsuarioClaims { get; }
+        protected bool UsuarioAutenticado { get; }
+
+        public MainController(INotifier notifier, IUserService userService)
         {
             _notifier = notifier;
+            _userService = userService;
+
+            UsuarioId = _userService.GetUserId();
+            UsuarioNome = _userService.Name;
+            UsuarioEmail = _userService.GetUserEmail();
+            UsuarioClaims = _userService.GetClaimsIdentity();
+            UsuarioAutenticado = _userService.IsAuthenticated();
         }
 
         protected bool OperacaoValida()

@@ -1,6 +1,6 @@
-﻿namespace Api.Application.Extensions
+﻿namespace Api.Application.Configurations
 {
-    public class AppSettings
+    public class AppSettingsConfig
     {
         public string Secret { get; set; }
         public int ExpiracaoHoras { get; set; }

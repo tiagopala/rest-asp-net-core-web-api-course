@@ -2,7 +2,7 @@
 
 namespace Api.Application.Extensions
 {
-    public class IdentityMensagensPortugues : IdentityErrorDescriber
+    public class IdentityMensagensPortuguesExtension : IdentityErrorDescriber
     {
         public override IdentityError DefaultError() { return new IdentityError { Code = nameof(DefaultError), Description = $"Um erro desconhecido ocorreu." }; }
         public override IdentityError ConcurrencyFailure() { return new IdentityError { Code = nameof(ConcurrencyFailure), Description = "Falha de concorrência otimista, o objeto foi modificado." }; }

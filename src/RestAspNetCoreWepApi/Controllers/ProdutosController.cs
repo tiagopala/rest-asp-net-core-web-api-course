@@ -20,10 +20,10 @@ namespace Api.Application.Controllers
         private readonly IMapper _mapper;
 
         public ProdutosController(
-            IProdutoRepository produtoRepository,
-            IProdutoService produtoService,
             IMapper mapper,
-            INotifier notifier) : base(notifier)
+            IProdutoService produtoService,
+            IProdutoRepository produtoRepository,
+            INotifier notifier, IUserService userService) : base(notifier, userService)
         {
             _produtoRepository = produtoRepository;
             _produtoService = produtoService;
