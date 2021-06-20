@@ -66,15 +66,6 @@ namespace Api.Application.Controllers
         //[ClaimsAuthorize("Fornecedor", "Adicionar")]
         public async Task<ActionResult<FornecedorDTO>> Adicionar(FornecedorDTO fornecedorDTO)
         {
-            if (UsuarioAutenticado)
-            {
-                // Exemplo de como capturar informações de usuário de forma simples, se necessário.
-                var userId = UsuarioId;
-                var userName = UsuarioNome;
-                var userEmail = UsuarioEmail;
-                var userClaims = UsuarioClaims;
-            }
-
             if (!ModelState.IsValid) 
                 return CustomResponse(ModelState);
 
