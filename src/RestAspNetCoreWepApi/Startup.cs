@@ -32,9 +32,10 @@ namespace RestAspNetCoreWepApi
             services.RegisterDbContext(Configuration);
             services.AddIdentityConfiguration(Configuration);
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddControllers();
+            services.ResolveVersioning();
             services.RegisterSwagger();
             services.RegisterDependencyInjection();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

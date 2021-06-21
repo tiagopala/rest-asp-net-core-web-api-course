@@ -2,6 +2,7 @@
 using Api.Business.Interfaces;
 using Api.Business.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -12,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace Api.Application.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ProdutosController : MainController
     {
         private readonly IProdutoRepository _produtoRepository;
