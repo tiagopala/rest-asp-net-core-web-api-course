@@ -5,6 +5,8 @@ using Api.Business.Services;
 using Api.Data.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Api.Application.Configurations
 {
@@ -26,6 +28,8 @@ namespace Api.Application.Configurations
             services.AddScoped<IProdutoService, ProdutoService>();
             services.AddScoped<IUserService, UserService>();
             #endregion
+
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Api.Application.Configurations;
+using Api.Application.Controllers;
 using Api.Application.DTOs;
-using Api.Application.Extensions;
 using Api.Business.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,9 +14,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Api.Application.Controllers
+namespace Api.Application.V1.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class AuthController : MainController
     {
         private readonly SignInManager<IdentityUser> _signInManager;

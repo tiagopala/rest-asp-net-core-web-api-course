@@ -1,4 +1,5 @@
-﻿using Api.Application.DTOs;
+﻿using Api.Application.Controllers;
+using Api.Application.DTOs;
 using Api.Business.Interfaces;
 using Api.Business.Models;
 using AutoMapper;
@@ -11,10 +12,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Api.Application.Controllers
+namespace Api.Application.V1.Controllers
 {
     [Authorize]
     [Route("api/v{version:apiVersion}/[controller]")]
+    [Produces("application/json")]
     public class ProdutosController : MainController
     {
         private readonly IProdutoRepository _produtoRepository;

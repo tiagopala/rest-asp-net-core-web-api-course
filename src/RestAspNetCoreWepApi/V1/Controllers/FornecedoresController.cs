@@ -9,12 +9,14 @@ using Microsoft.AspNetCore.Http;
 using Api.Business.Models;
 using Microsoft.AspNetCore.Authorization;
 using Api.Application.Extensions;
+using Api.Application.Controllers;
 
-namespace Api.Application.Controllers
+namespace Api.Application.V1.Controllers
 {
     [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
+    [Produces("application/json")]
     public class FornecedoresController : MainController
     {
         private readonly IFornecedorRepository _fornecedorRepository;
