@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Api.Application.Configurations
@@ -16,6 +17,36 @@ namespace Api.Application.Configurations
             services.AddSwaggerGen(c =>
             {
                 c.OperationFilter<SwaggerDefaultValues>();
+
+                // Authorization
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Inserir o token JWT desta maneira: Bearer {seu token}",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                
+                var security = new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "Bearer",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                };
+
+                c.AddSecurityRequirement(security);
             });
         }
 
