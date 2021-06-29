@@ -16,8 +16,6 @@ namespace Api.Application.Configurations
         {
             services.AddSwaggerGen(c =>
             {
-                c.OperationFilter<SwaggerDefaultValues>();
-
                 // Authorization
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -47,6 +45,9 @@ namespace Api.Application.Configurations
                 };
 
                 c.AddSecurityRequirement(security);
+
+                c.EnableAnnotations(); // Habilitando a utilização de Tags.
+                c.OperationFilter<SwaggerDefaultValues>();
             });
         }
 
@@ -103,7 +104,15 @@ namespace Api.Application.Configurations
         {
             var apiDescription = context.ApiDescription;
 
-            operation.Deprecated = apiDescription.IsDeprecated();
+            var deprecated = operation.Deprecated |= apiDescription.IsDeprecated();
+
+            if (deprecated)
+            {
+                var obsoleteAttribute = context.ApiDescription.ActionDescriptor.EndpointMetadata.FirstOrDefault(x => x.GetType() == typeof(ObsoleteAttribute));
+
+                if (obsoleteAttribute != null)
+                    operation.Description = ((ObsoleteAttribute)obsoleteAttribute).Message;
+            }
 
             if (operation.Parameters is null)
                 return;

@@ -57,7 +57,6 @@ namespace Api.Application.V1.Controllers
         }
 
         [HttpPost]
-        [SwaggerOperation(Summary = "Criar um novo produto")]
         public async Task<ActionResult<ProdutoDTO>> Adicionar(ProdutoDTO produtoDTO)
         {
             if (!ModelState.IsValid)
@@ -100,6 +99,7 @@ namespace Api.Application.V1.Controllers
         }
 
         [HttpPost("imagem")]
+        [Obsolete("Esse endpoint está depreciado.")]
         //[DisableRequestSizeLimit]  // Desabilitar qualquer limite de tamanho
         [RequestSizeLimit(40000000)] // Habilitando arquivos de até 40 mbps
         public ActionResult AdicionarImagem(IFormFile file)
